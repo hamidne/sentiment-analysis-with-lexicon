@@ -63,11 +63,19 @@ func loadLexicon() map[string]bool {
 func main() {
 	lexicon := loadLexicon()
 	data := getData("training.txt")
-
 	regex := regexp.MustCompile(`(?m) \w+`)
-	for _, match := range regex.FindAllString(strings.ToLower(data[0][1:]), -1) {
-		fmt.Println(match[1:], lexicon[match[1:]])
-	}
 
-	//fmt.Println(lexicon)
+	var sum = 0
+	fmt.Println(data[6875])
+	for _, match := range regex.FindAllString(strings.ToLower(data[6875][1:]), -1) {
+		_, found := lexicon[match[1:]]
+		if found {
+			if lexicon[match[1:]] {
+				sum++
+			} else {
+				sum--
+			}
+		}
+	}
+	fmt.Println(sum)
 }

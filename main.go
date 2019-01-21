@@ -64,10 +64,11 @@ func main() {
 	data := getData("training.txt")
 	regex := regexp.MustCompile(`(?m) \w+`)
 
-	var ok = 0
-	var nok = 0
+	var tp, fp, tn, fn int
+
 	for _, sentence := range data {
 		var sum = 0
+
 		for _, match := range regex.FindAllString(strings.ToLower(sentence[1:]), -1) {
 			if _, found := lexicon[match[1:]]; found {
 				if lexicon[match[1:]] {
@@ -77,13 +78,27 @@ func main() {
 				}
 			}
 		}
-		if (sum >= 0 && sentence[:1] == "1") || (sum < 0 && sentence[:1] == "0") {
-			ok++
+
+		if sum >= 0 {
+			if sentence[:1] == "1" {
+				tp++
+			} else {
+				fp++
+			}
 		} else {
-			nok++
+			if sentence[:1] == "0" {
+				tn++
+			} else {
+				fn++
+			}
 		}
 	}
 
-	fmt.Println(ok, nok)
+	recall := float32(tp) / float32(tp+fn)
+	precision := float32(tp) / float32(tp+fp)
+
+	fmt.Println(`Recall:     `, recall)
+	fmt.Println(`Precision:  `, precision)
+	fmt.Println(`F1-measure: `, float32(2*recall*precision)/float32(recall+precision))
 
 }

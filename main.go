@@ -1,12 +1,38 @@
 package main
 
 import (
+	"bufio"
 	"encoding/csv"
 	"fmt"
+	"log"
 	"os"
+	"regexp"
+	"strings"
 )
 
-func loadCorpse() map[string]bool {
+func getData(fileName string) []string {
+
+	var train []string
+	file, err := os.Open(fileName)
+
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer file.Close()
+
+	scanner := bufio.NewScanner(file)
+	for scanner.Scan() {
+		train = append(train, scanner.Text())
+	}
+
+	if err := scanner.Err(); err != nil {
+		log.Fatal(err)
+	}
+
+	return train
+}
+
+func loadLexicon() map[string]bool {
 
 	// Open CSV file
 	f, err := os.Open("BingLiu.csv")
@@ -35,6 +61,13 @@ func loadCorpse() map[string]bool {
 }
 
 func main() {
-	corpse := loadCorpse()
-	fmt.Println(corpse)
+	lexicon := loadLexicon()
+	data := getData("training.txt")
+
+	regex := regexp.MustCompile(`(?m) \w+`)
+	for _, match := range regex.FindAllString(strings.ToLower(data[0][1:]), -1) {
+		fmt.Println(match[1:], lexicon[match[1:]])
+	}
+
+	//fmt.Println(lexicon)
 }

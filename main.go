@@ -32,10 +32,10 @@ func getData(fileName string) []string {
 	return train
 }
 
-func loadLexicon() map[string]bool {
+func loadLexicon(fileName string, wordColumn byte, polarityColumn byte, polarityName string) map[string]bool {
 
 	// Open CSV file
-	f, err := os.Open("BingLiu.csv")
+	f, err := os.Open(fileName)
 	if err != nil {
 		panic(err)
 	}
@@ -50,10 +50,10 @@ func loadLexicon() map[string]bool {
 	corpse := make(map[string]bool)
 	for _, line := range lines {
 
-		if line[1] == "positive" {
-			corpse[line[0]] = true
+		if line[polarityColumn] == polarityName {
+			corpse[line[wordColumn]] = true
 		} else {
-			corpse[line[0]] = false
+			corpse[line[wordColumn]] = false
 		}
 	}
 
@@ -61,7 +61,8 @@ func loadLexicon() map[string]bool {
 }
 
 func main() {
-	lexicon := loadLexicon()
+	//lexicon := loadLexicon(`NRC.csv`, 1, 2, `Positive`)
+	lexicon := loadLexicon(`BingLiu.csv`, 0, 1, `positive`)
 	data := getData("training.txt")
 	regex := regexp.MustCompile(`(?m) \w+`)
 

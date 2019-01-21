@@ -34,14 +34,12 @@ func getData(fileName string) []string {
 
 func loadLexicon(fileName string, wordColumn byte, polarityColumn byte, polarityName string) map[string]bool {
 
-	// Open CSV file
 	f, err := os.Open(fileName)
 	if err != nil {
 		panic(err)
 	}
 	defer f.Close()
 
-	// Read File into a Variable
 	lines, err := csv.NewReader(f).ReadAll()
 	if err != nil {
 		panic(err)
@@ -71,8 +69,7 @@ func main() {
 	for _, sentence := range data {
 		var sum = 0
 		for _, match := range regex.FindAllString(strings.ToLower(sentence[1:]), -1) {
-			_, found := lexicon[match[1:]]
-			if found {
+			if _, found := lexicon[match[1:]]; found {
 				if lexicon[match[1:]] {
 					sum++
 				} else {

@@ -65,17 +65,27 @@ func main() {
 	data := getData("training.txt")
 	regex := regexp.MustCompile(`(?m) \w+`)
 
-	var sum = 0
-	fmt.Println(data[6875])
-	for _, match := range regex.FindAllString(strings.ToLower(data[6875][1:]), -1) {
-		_, found := lexicon[match[1:]]
-		if found {
-			if lexicon[match[1:]] {
-				sum++
-			} else {
-				sum--
+	var ok = 0
+	var nok = 0
+	for _, sentence := range data {
+		var sum = 0
+		for _, match := range regex.FindAllString(strings.ToLower(sentence[1:]), -1) {
+			_, found := lexicon[match[1:]]
+			if found {
+				if lexicon[match[1:]] {
+					sum++
+				} else {
+					sum--
+				}
 			}
 		}
+		if (sum >= 0 && sentence[:1] == "1") || (sum < 0 && sentence[:1] == "0") {
+			ok++
+		} else {
+			nok++
+		}
 	}
-	fmt.Println(sum)
+
+	fmt.Println(ok, nok)
+
 }
